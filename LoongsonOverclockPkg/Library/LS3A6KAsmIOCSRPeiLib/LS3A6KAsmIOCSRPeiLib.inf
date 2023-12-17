@@ -1,0 +1,30 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = LS3A6KAsmIOCSRPeiLib
+  FILE_GUID                      = 12541ac4-dfdb-49f8-8c62-e63b1aa458f0
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = DebugLib|BASE PEIM DXE_DRIVER UEFI_APPLICATION
+
+
+[Sources.LOONGARCH64]
+  asm/iocsr.S
+
+[Packages]
+  MdePkg/MdePkg.dec
+  LoongsonOverclockPkg/LoongsonOverclockPkg.dec
+
+[LibraryClasses]
+  BaseMemoryLib
+  BaseLib
+  PcdLib
+  PrintLib
+  DebugLib
+  LS3A6KAsmIOCSRPeiLib
+
+[Pcd.common]
+  gEfiMdePkgTokenSpaceGuid.PcdDebugPrintErrorLevel
+  gEfiMdePkgTokenSpaceGuid.PcdDebugClearMemoryValue
+  gEfiMdePkgTokenSpaceGuid.PcdDebugPropertyMask
+  gEfiMdePkgTokenSpaceGuid.PcdFixedDebugPrintErrorLevel
+

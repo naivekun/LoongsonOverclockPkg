@@ -1,0 +1,71 @@
+[DEFINES]
+  INF_VERSION                    = 1.27
+  BASE_NAME                      = XA61200OverclockPeim
+  FILE_GUID                      = 3ab5cbdb-db79-4689-a2ee-9ce2455e8002
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = XA61200OverclockModuleEntrypoint
+
+[Sources]
+  XA61200OverclockPeim.c
+  Overclock.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  # CryptoPkg/CryptoPkg.dec
+  LoongsonOverclockPkg/LoongsonOverclockPkg.dec
+
+[LibraryClasses]
+  # UefiDriverEntryPoint
+  # UefiBootServicesTableLib
+  # UefiRuntimeServicesTableLib
+  PeiServicesTablePointerLib
+  PeimEntryPoint
+  PeiServicesLib
+  DebugLib
+  PrintLib
+  BaseMemoryLib
+  IoLib
+  IntrinsicLib
+  PciLib
+  LS3A6KAsmIOCSRPeiLib
+  LS3A6KPackageControlLib
+  #BaseCryptLib
+  #OpensslLib
+
+[Guids]
+  gEfiEventVirtualAddressChangeGuid
+  gEfiGlobalVariableGuid
+
+[Protocols]
+  # gEfiLoadedImageProtocolGuid
+  # gEfiDriverBindingProtocolGuid
+  # gEfiSimpleTextInProtocolGuid                            ## CONSUMES
+  # gEfiSimpleTextOutProtocolGuid                           ## CONSUMES
+  # gEfiDebugPortProtocolGuid
+  # gEfiPcdProtocolGuid
+
+[Ppis]
+  gEfiPeiReadOnlyVariable2PpiGuid
+
+[Depex]
+  gEfiPeiReadOnlyVariable2PpiGuid
+  # gEfiVariableArchProtocolGuid AND
+  # gEfiVariableWriteArchProtocolGuid AND
+  # gEfiDebugPortProtocolGuid
+  
+
+[BuildOptions.common.DXE_RUNTIME_DRIVER]
+  # Detect use of deprecated interfaces if any.
+  MSFT:*_*_*_CC_FLAGS = -D DISABLE_NEW_DEPRECATED_INTERFACES
+
+  # Remove DebugLib library instances (ASSERT and such) from the RELEASE binary.
+  # https://github.com/tianocore-docs/edk2-UefiDriverWritersGuide/blob/master/31_testing_and_debugging_uefi_drivers/314_debugging_code_statements/3141_configuring_debuglib_with_edk_ii.md
+  MSFT:RELEASE_*_*_CC_FLAGS = -D MDEPKG_NDEBUG
+
+  # By default, certain meta-data in the PE header is zeroed out to increase
+  # compression ratio. Some of those information can be helpful for a debugger,
+  # for example, to reconstruct stack trace. Leave it for such cases. See also,
+  # https://edk2-docs.gitbooks.io/edk-ii-basetools-user-guides/content/GenFw.html
+  MSFT:*_*_X64_GENFW_FLAGS = --keepexceptiontable --keepzeropending --keepoptionalheader

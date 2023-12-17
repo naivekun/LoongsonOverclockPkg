@@ -1,0 +1,45 @@
+[Defines]
+  INF_VERSION                    = 1.27
+  BASE_NAME                      = XA61200OverclockShellCommand
+  FILE_GUID                      = 17b42df5-c959-486d-bf54-7d1721d05453
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = XA61200OverclockShellCommandEntryPoint
+  UNLOAD_IMAGE                   = XA61200OverclockShellCommandUnload
+  UEFI_HII_RESOURCE_SECTION      = TRUE
+
+#
+#  VALID_ARCHITECTURES           = IA32 X64 ARM AARCH64 EBC LOONGARCH64
+#
+
+[Sources.common]
+  Overclock.c
+  XA61200OverclockShellCommand.c
+  XA61200OverclockShellCommand.uni
+
+[Packages]
+  MdePkg/MdePkg.dec
+  ShellPkg/ShellPkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  OvmfPkg/OvmfPkg.dec
+
+[LibraryClasses]
+  DebugLib
+  HiiLib
+  MemoryAllocationLib
+  ShellLib
+  UefiBootServicesTableLib
+  UefiDriverEntryPoint
+  UefiHiiServicesLib
+
+[Protocols]
+  gEfiDevicePathProtocolGuid                      ## SOMETIMES_PRODUCES
+  gEfiHiiPackageListProtocolGuid                  ## CONSUMES
+  gEfiShellDynamicCommandProtocolGuid             ## PRODUCES
+  gEfiDebugPortProtocolGuid
+  gEfiShellInterfaceGuid
+
+[DEPEX]
+  gEfiPcdProtocolGuid AND
+  gEfiHiiStringProtocolGuid AND
+  gEfiHiiDatabaseProtocolGuid

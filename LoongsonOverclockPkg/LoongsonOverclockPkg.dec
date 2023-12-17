@@ -1,0 +1,12 @@
+[Defines]
+  DEC_SPECIFICATION              = 1.27
+  PACKAGE_NAME                   = LoongsonOverclockPkg
+  PACKAGE_GUID                   = 15bf8f07-9f78-4b6a-9119-bc66a9fe7e0b
+  PACKAGE_VERSION                = 1.00
+
+[Includes.common]
+  Include                        # Root include for the package
+
+[Protocols]
+
+[Guids]

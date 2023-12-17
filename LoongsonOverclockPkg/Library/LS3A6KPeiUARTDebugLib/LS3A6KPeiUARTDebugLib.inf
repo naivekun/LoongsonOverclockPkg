@@ -1,0 +1,31 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = LS3A6KPeiUARTDebugLib
+  FILE_GUID                      = 12541ac4-dfdb-49f8-8c62-e63b1aa458f0
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = DebugLib|BASE PEIM DXE_DRIVER UEFI_APPLICATION
+
+
+[Sources.common]
+  DebugLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  LoongsonOverclockPkg/LoongsonOverclockPkg.dec
+
+[LibraryClasses]
+  BaseMemoryLib
+  BaseLib
+  PcdLib
+  PrintLib
+  DebugLib
+  LS3A6KAsmIOCSRPeiLib
+  LS3A6KPeiUARTDebugLib
+
+[Pcd.common]
+  gEfiMdePkgTokenSpaceGuid.PcdDebugPrintErrorLevel
+  gEfiMdePkgTokenSpaceGuid.PcdDebugClearMemoryValue
+  gEfiMdePkgTokenSpaceGuid.PcdDebugPropertyMask
+  gEfiMdePkgTokenSpaceGuid.PcdFixedDebugPrintErrorLevel
+
