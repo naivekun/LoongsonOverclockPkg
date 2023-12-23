@@ -31,6 +31,7 @@
   PciLib
   LS3A6KAsmIOCSRPeiLib
   LS3A6KPackageControlLib
+  LS3A6KOverclockCommonLib
   #BaseCryptLib
   #OpensslLib
 

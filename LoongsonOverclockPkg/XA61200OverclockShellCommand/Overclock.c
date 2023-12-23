@@ -1,14 +1,15 @@
 #include "Overclock.h"
 
-LS_OVERCLOCK_CONFIG *ocConfig;
-EFI_GUID LsBoostConfigGuid = {0x1d3f4738, 0x78d5, 0x3ac8, {0x99, 0x8a, 0x32, 0x01, 0x9c, 0x55, 0x2a, 0xf0}};
-
 VOID WriteDefaultOCConfig(LS_OVERCLOCK_CONFIG *ocConfig) {
     SetMem(ocConfig, sizeof(ocConfig), 0);
     ocConfig->Magic = LS_OVERCLOCK_DEFAULT_MAGIC;
     ocConfig->VoltageCore = LS_OVERCLOCK_DEFAULT_VOLT_CORE;
     ocConfig->VoltageSA = LS_OVERCLOCK_DEFAULT_VOLT_SA;
     ocConfig->MainFreq = LS_OVERCLOCK_DEFAULT_FREQ;
+    ocConfig->NodeFreqDiv = LS_OVERCLOCK_DEFAULT_NODE_FREQ_DIV;
+    ocConfig->NodeFreqMode = LS_OVERCLOCK_DEFAULT_NODE_FREQ_MODE;
+    ocConfig->HTFreqDiv = LS_OVERCLOCK_DEFAULT_HT_FREQ_DIV;
+    ocConfig->HTFreqMode = LS_OVERCLOCK_DEFAULT_HT_FREQ_MODE;
     ocConfig->Enable = LS_OVERCLOCK_DEFAULT_ENABLE;
 }
 
@@ -46,6 +47,10 @@ EFI_STATUS OverclockModuleInit() {
     DebugPrint(EFI_D_INFO, "Freq: %d\n", ocConfig->MainFreq);
     DebugPrint(EFI_D_INFO, "VoltageCore: %d\n", ocConfig->VoltageCore);
     DebugPrint(EFI_D_INFO, "VoltageSA: %d\n", ocConfig->VoltageSA);
+    DebugPrint(EFI_D_INFO, "HT FreqDiv: %d\n", ocConfig->HTFreqDiv);
+    DebugPrint(EFI_D_INFO, "HT FreqMode: %d\n", ocConfig->HTFreqMode);
+    DebugPrint(EFI_D_INFO, "Node FreqDiv: %d\n", ocConfig->NodeFreqDiv);
+    DebugPrint(EFI_D_INFO, "Node FreqMode: %d\n", ocConfig->NodeFreqMode);
     DebugPrint(EFI_D_INFO, "---------------------------\n");
 
     return EFI_SUCCESS;

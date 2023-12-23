@@ -1,14 +1,14 @@
 [Defines]
   INF_VERSION                    = 0x00010005
-  BASE_NAME                      = LS3A6KPackageControlLib
-  FILE_GUID                      = 88ed2170-a2f1-4dac-8faa-12f187ad2d8b 
+  BASE_NAME                      = LS3A6KOverclockCommonLib
+  FILE_GUID                      = dc143ce6-b61e-4c56-9ae9-25e04d04e8d4
   MODULE_TYPE                    = BASE
   VERSION_STRING                 = 1.0
   LIBRARY_CLASS                  = DebugLib|BASE PEIM DXE_DRIVER UEFI_APPLICATION
 
 
 [Sources.LOONGARCH64]
-  PackageControl.c
+  LS3A6KOverclockCommonLib.c
 
 [Packages]
   MdePkg/MdePkg.dec
@@ -20,7 +20,6 @@
   PcdLib
   PrintLib
   DebugLib
-  LS3A6KAsmIOCSRPeiLib
 
 [Pcd.common]
   gEfiMdePkgTokenSpaceGuid.PcdDebugPrintErrorLevel

@@ -12,7 +12,7 @@
 #  VALID_ARCHITECTURES           = IA32 X64 ARM AARCH64 EBC LOONGARCH64
 #
 
-[Sources.common]
+[Sources]
   Overclock.c
   XA61200OverclockShellCommand.c
   XA61200OverclockShellCommand.uni
@@ -22,6 +22,7 @@
   ShellPkg/ShellPkg.dec
   MdeModulePkg/MdeModulePkg.dec
   OvmfPkg/OvmfPkg.dec
+  LoongsonOverclockPkg/LoongsonOverclockPkg.dec
 
 [LibraryClasses]
   DebugLib
@@ -31,6 +32,7 @@
   UefiBootServicesTableLib
   UefiDriverEntryPoint
   UefiHiiServicesLib
+  LS3A6KOverclockCommonLib
 
 [Protocols]
   gEfiDevicePathProtocolGuid                      ## SOMETIMES_PRODUCES

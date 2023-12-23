@@ -101,15 +101,15 @@ EFI_STATUS SetVoltage(UINT32 rail, UINT16 Voltage) {
 }
 
 EFI_STATUS SetMainClockFreq(UINT32 clockMhz) {
-    if (clockMhz > 2500) {
-        // HT clock will exceed 1.25G
-        LS3A6000_FUNC_CONFIG_REG_180 FuncConfigReg;
-        FuncConfigReg.Value = AsmIOCSRRead64(LS3A6000_FUNC_CONFIG_REG);
-        FuncConfigReg.HT_freq_scale_ctrl = 2;
-        DebugPrint(EFI_D_INFO, "debug [0x180] = %016llx\n", FuncConfigReg.Value);
-        AsmIOCSRWrite64(LS3A6000_FUNC_CONFIG_REG, FuncConfigReg.Value);
-        DBG_REG_PRINT(LS3A6000_FUNC_CONFIG_REG, 180);
-    }
+    // if (clockMhz > 2500) {
+    //     // HT clock will exceed 1.25G
+    //     LS3A6000_FUNC_CONFIG_REG_180 FuncConfigReg;
+    //     FuncConfigReg.Value = AsmIOCSRRead64(LS3A6000_FUNC_CONFIG_REG);
+    //     FuncConfigReg.HT_freq_scale_ctrl = 2;
+    //     DebugPrint(EFI_D_INFO, "debug [0x180] = %016llx\n", FuncConfigReg.Value);
+    //     AsmIOCSRWrite64(LS3A6000_FUNC_CONFIG_REG, FuncConfigReg.Value);
+    //     DBG_REG_PRINT(LS3A6000_FUNC_CONFIG_REG, 180);
+    // }
 
     LS3A6000_FREQ_CONFIG_REG_1B0 FreqConfigReg;
     FreqConfigReg.Value = AsmIOCSRRead64(LS3A6000_FREQ_CONFIG_REG);
@@ -147,6 +147,40 @@ EFI_STATUS SetMainClockFreq(UINT32 clockMhz) {
     AsmIOCSRWrite64(LS3A6000_FREQ_CONFIG_REG, FreqConfigReg.Value);
     DBG_REG_PRINT(LS3A6000_FREQ_CONFIG_REG, 1B0);
 
+    return EFI_SUCCESS;
+}
+
+EFI_STATUS SetNodeClockControl(UINT8 Div, UINT8 Mode) {
+    LS3A6000_FUNC_CONFIG_REG_180 FuncConfigReg;
+    FuncConfigReg.Value = AsmIOCSRRead64(LS3A6000_FUNC_CONFIG_REG);
+    FuncConfigReg.Node_freq_ctrl = Div;
+    DebugPrint(EFI_D_INFO, "debug [0x180] = %016llx\n", FuncConfigReg.Value);
+    AsmIOCSRWrite64(LS3A6000_FUNC_CONFIG_REG, FuncConfigReg.Value);
+    DBG_REG_PRINT(LS3A6000_FUNC_CONFIG_REG, 180);
+
+    LS3A6000_OTHER_FUNC_CONFIG_REG_420 OtherFuncConfigReg;
+    OtherFuncConfigReg.Value = AsmIOCSRRead64(LS3A6000_OTHER_FUNC_CONFIG_REG);
+    OtherFuncConfigReg.freqscale_mode_node = Mode;
+    DebugPrint(EFI_D_INFO, "debug [0x420] = %016llx\n", OtherFuncConfigReg.Value);
+    AsmIOCSRWrite64(LS3A6000_OTHER_FUNC_CONFIG_REG, OtherFuncConfigReg.Value);
+    DBG_REG_PRINT(LS3A6000_OTHER_FUNC_CONFIG_REG, 420);
+    return EFI_SUCCESS;
+}
+
+EFI_STATUS SetHTClockControl(UINT8 Div, UINT8 Mode) {
+    LS3A6000_FUNC_CONFIG_REG_180 FuncConfigReg;
+    FuncConfigReg.Value = AsmIOCSRRead64(LS3A6000_FUNC_CONFIG_REG);
+    FuncConfigReg.HT_freq_scale_ctrl = Div;
+    DebugPrint(EFI_D_INFO, "debug [0x180] = %016llx\n", FuncConfigReg.Value);
+    AsmIOCSRWrite64(LS3A6000_FUNC_CONFIG_REG, FuncConfigReg.Value);
+    DBG_REG_PRINT(LS3A6000_FUNC_CONFIG_REG, 180);
+
+    LS3A6000_OTHER_FUNC_CONFIG_REG_420 OtherFuncConfigReg;
+    OtherFuncConfigReg.Value = AsmIOCSRRead64(LS3A6000_OTHER_FUNC_CONFIG_REG);
+    OtherFuncConfigReg.freqscale_mode_HT = Mode;
+    DebugPrint(EFI_D_INFO, "debug [0x420] = %016llx\n", OtherFuncConfigReg.Value);
+    AsmIOCSRWrite64(LS3A6000_OTHER_FUNC_CONFIG_REG, OtherFuncConfigReg.Value);
+    DBG_REG_PRINT(LS3A6000_OTHER_FUNC_CONFIG_REG, 420);
     return EFI_SUCCESS;
 }
 

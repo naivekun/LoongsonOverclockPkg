@@ -21,10 +21,43 @@ STATIC CONST SHELL_PARAM_ITEM ParamList[] = {
     {L"-vsa", TypeValue},
     {L"-f", TypeValue},
     {L"-e", TypeValue},
+    {L"-ndiv", TypeValue},
+    {L"-nmode", TypeValue},
+    {L"-htdiv", TypeValue},
+    {L"-htmode", TypeValue},
     {NULL , TypeMax}
 };
 
 #define APPLICATION_NAME L"overclock"
+
+#define COMMAND_VALUE_LIMIT_NOLIMIT -1
+#define COMMAND_VALUE_SET(Package, Name, Value, Min, Max) do { \
+    const CHAR16 *ValueStr = ShellCommandLineGetValue(Package, L"-" #Name); \
+    UINT16 ValueSet; \
+    if (ValueStr != NULL) { \
+        if (!StringToUint16(ValueStr, &ValueSet)) { \
+            ReturnStatus = SHELL_INVALID_PARAMETER; \
+            goto Done; \
+        } \
+        if ((Min != COMMAND_VALUE_LIMIT_NOLIMIT && ValueSet < Min) || (Max != COMMAND_VALUE_LIMIT_NOLIMIT && ValueSet > Max)) { \
+            ShellPrintHiiEx( \
+                -1, \
+                -1, \
+                NULL, \
+                STRING_TOKEN(STR_GEN_PARAM_INV), \
+                mXA61200OverclcokShellCommandHiiHandle, \
+                APPLICATION_NAME, \
+                ValueStr); \
+            ReturnStatus = SHELL_INVALID_PARAMETER; \
+            goto Done; \
+        } \
+        Value = ValueSet; \
+        Status = WriteOverclockConfig(); \
+        if (EFI_ERROR(Status)) { \
+            ReturnStatus = SHELL_DEVICE_ERROR; \
+        } \
+    } \
+} while(0)
 
 /**
   Check and convert the UINT16 option values of the 'tftp' command
@@ -104,7 +137,6 @@ OverclockCommandHandler (
         goto Done;
     }
 
-
     if (ShellCommandLineGetCount(Package) > 2) {
         ShellPrintHiiEx(
             -1, -1, NULL, STRING_TOKEN(STR_GEN_TOO_MANY),
@@ -115,129 +147,30 @@ OverclockCommandHandler (
         goto Done;
     }
 
-
-    const CHAR16 *ValueStr;
-    ValueStr = ShellCommandLineGetValue(Package, L"-vcore");
-    UINT16 VoltageCoreSet;
-    if (ValueStr != NULL) {
-        DebugPrint(EFI_D_INFO, "set voltage\n");
-        if (!StringToUint16(ValueStr, &VoltageCoreSet)) {
-            DebugPrint(EFI_D_INFO, "set voltage convert uint16 failed\n");
-            ReturnStatus = SHELL_INVALID_PARAMETER;
-            goto Done;
-        }
-        if (VoltageCoreSet < LS_OVERCLOCK_LIMIT_VOLT_MIN || VoltageCoreSet > LS_OVERCLOCK_LIMIT_VOLT_MAX) {
-            ShellPrintHiiEx(
-                -1,
-                -1,
-                NULL,
-                STRING_TOKEN(STR_GEN_PARAM_INV),
-                mXA61200OverclcokShellCommandHiiHandle,
-                APPLICATION_NAME,
-                ValueStr);
-            ReturnStatus = SHELL_INVALID_PARAMETER;
-            goto Done;
-        }
-        DebugPrint(EFI_D_INFO, "set voltage to struct\n");
-        ocConfig->VoltageCore = (UINT32)VoltageCoreSet;
-        Status = WriteOverclockConfig();
-        if (EFI_ERROR(Status)) {
-            DebugPrint(EFI_D_INFO, "write ocConfig to variable failed\n");
-            ReturnStatus = SHELL_DEVICE_ERROR;
-        }
-        DebugPrint(EFI_D_INFO, "set voltage done\n");
-    }
-
-    ValueStr = ShellCommandLineGetValue(Package, L"-vsa");
-    UINT16 VoltageSASet;
-    if (ValueStr != NULL) {
-        DebugPrint(EFI_D_INFO, "set voltage\n");
-        if (!StringToUint16(ValueStr, &VoltageSASet)) {
-            DebugPrint(EFI_D_INFO, "set voltage convert uint16 failed\n");
-            ReturnStatus = SHELL_INVALID_PARAMETER;
-            goto Done;
-        }
-        if (VoltageSASet < LS_OVERCLOCK_LIMIT_VOLT_MIN || VoltageSASet > LS_OVERCLOCK_LIMIT_VOLT_MAX) {
-            ShellPrintHiiEx(
-                -1,
-                -1,
-                NULL,
-                STRING_TOKEN(STR_GEN_PARAM_INV),
-                mXA61200OverclcokShellCommandHiiHandle,
-                APPLICATION_NAME,
-                ValueStr);
-            ReturnStatus = SHELL_INVALID_PARAMETER;
-            goto Done;
-        }
-        DebugPrint(EFI_D_INFO, "set voltage to struct\n");
-        ocConfig->VoltageSA = (UINT32)VoltageSASet;
-        Status = WriteOverclockConfig();
-        if (EFI_ERROR(Status)) {
-            DebugPrint(EFI_D_INFO, "write ocConfig to variable failed\n");
-            ReturnStatus = SHELL_DEVICE_ERROR;
-        }
-        DebugPrint(EFI_D_INFO, "set voltage done\n");
-    }
-
-    ValueStr = ShellCommandLineGetValue(Package, L"-f");
-    UINT16 FrequencySet;
-    if (ValueStr != NULL) {
-        if (!StringToUint16(ValueStr, &FrequencySet)) {
-            ReturnStatus = SHELL_INVALID_PARAMETER;
-            goto Done;
-        }
-        if (FrequencySet < LS_OVERCLOCK_LIMIT_FREQ_MIN || FrequencySet > LS_OVERCLOCK_LIMIT_FREQ_MAX) {
-            ShellPrintHiiEx(
-                -1,
-                -1,
-                NULL,
-                STRING_TOKEN(STR_GEN_PARAM_INV),
-                mXA61200OverclcokShellCommandHiiHandle,
-                APPLICATION_NAME,
-                ValueStr);
-            ReturnStatus = SHELL_INVALID_PARAMETER;
-            goto Done;
-        }
-        ocConfig->MainFreq = (UINT32)FrequencySet;
-        Status = WriteOverclockConfig();
-        if (EFI_ERROR(Status)) {
-            ReturnStatus = SHELL_DEVICE_ERROR;
-        }
-    }
-
-    ValueStr = ShellCommandLineGetValue(Package, L"-e");
-    UINT16 EnableSet;
-    if (ValueStr != NULL) {
-        if (!StringToUint16(ValueStr, &EnableSet)) {
-            ReturnStatus = SHELL_INVALID_PARAMETER;
-            goto Done;
-        }
-        if (EnableSet != 1 && EnableSet != 0) {
-            ShellPrintHiiEx(
-                -1,
-                -1,
-                NULL,
-                STRING_TOKEN(STR_GEN_PARAM_INV),
-                mXA61200OverclcokShellCommandHiiHandle,
-                APPLICATION_NAME,
-                ValueStr);
-            ReturnStatus = SHELL_INVALID_PARAMETER;
-            goto Done;
-        }
-        ocConfig->Enable = EnableSet == 1?TRUE:FALSE;
-        Status = WriteOverclockConfig();
-        if (EFI_ERROR(Status)) {
-            ReturnStatus = SHELL_DEVICE_ERROR;
-        }
-    }
+    COMMAND_VALUE_SET(Package, vcore, ocConfig->VoltageCore, LS_OVERCLOCK_LIMIT_VOLT_MIN, LS_OVERCLOCK_LIMIT_VOLT_MAX);
+    COMMAND_VALUE_SET(Package, vsa, ocConfig->VoltageSA, LS_OVERCLOCK_LIMIT_VOLT_MIN, LS_OVERCLOCK_LIMIT_VOLT_MAX);
+    COMMAND_VALUE_SET(Package, f, ocConfig->MainFreq, LS_OVERCLOCK_LIMIT_FREQ_MIN, LS_OVERCLOCK_LIMIT_FREQ_MAX);
+    COMMAND_VALUE_SET(Package, e, ocConfig->Enable, 0, 1);
+    COMMAND_VALUE_SET(Package, ndiv, ocConfig->NodeFreqDiv, 0, 7);
+    COMMAND_VALUE_SET(Package, nmode, ocConfig->NodeFreqMode, 0, 1);
+    COMMAND_VALUE_SET(Package, htdiv, ocConfig->HTFreqDiv, 0, 7);
+    COMMAND_VALUE_SET(Package, htmode, ocConfig->HTFreqMode, 0, 1);
 
     if (ShellCommandLineGetFlag(Package, L"-p")) {
+        int nodeFreq = FREQ_DIV(ocConfig->NodeFreqMode, ocConfig->MainFreq, ocConfig->NodeFreqDiv);
+        int htFreq = FREQ_DIV(ocConfig->HTFreqMode, nodeFreq, ocConfig->HTFreqDiv);
         ShellPrintHiiEx(-1, -1, NULL, STRING_TOKEN(STR_OVERCLOCK_SETTINGS),
             mXA61200OverclcokShellCommandHiiHandle,
             ocConfig->Enable?L"ENABLE":L"DISABLE",
             ocConfig->MainFreq,
             ocConfig->VoltageCore,
-            ocConfig->VoltageSA
+            ocConfig->VoltageSA,
+            ocConfig->NodeFreqDiv,
+            freqControlModes[ocConfig->NodeFreqMode%2],
+            nodeFreq,
+            ocConfig->HTFreqDiv,
+            freqControlModes[ocConfig->HTFreqMode%2],
+            htFreq
         );
     } else {
         ReturnStatus = SHELL_INVALID_PARAMETER;

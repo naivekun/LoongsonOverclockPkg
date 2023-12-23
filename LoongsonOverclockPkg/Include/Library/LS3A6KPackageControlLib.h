@@ -131,5 +131,7 @@ EFI_STATUS AvsRead(UINT16 cmd_type, UINT16 rail, UINT16 *Ret);
 EFI_STATUS AvsWrite(UINT16 cmd_type, UINT16 rail, UINT16 data);
 VOID PrintPackageStatus();
 EFI_STATUS SetMainClockFreq(UINT32 clockMhz);
+EFI_STATUS SetNodeClockControl(UINT8 Div, UINT8 Mode);
+EFI_STATUS SetHTClockControl(UINT8 Div, UINT8 Mode);
 
 #endif

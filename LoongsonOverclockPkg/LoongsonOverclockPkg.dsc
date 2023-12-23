@@ -48,6 +48,7 @@
   UefiHiiServicesLib|MdeModulePkg/Library/UefiHiiServicesLib/UefiHiiServicesLib.inf
   FileHandleLib|MdePkg/Library/UefiFileHandleLib/UefiFileHandleLib.inf
   SortLib|MdeModulePkg/Library/UefiSortLib/UefiSortLib.inf
+  LS3A6KOverclockCommonLib|LoongsonOverclockPkg/Library/LS3A6KOverclockCommonLib/LS3A6KOverclockCommonLib.inf
   !if $(TARGET) == RELEASE
     DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf
   !else
@@ -89,6 +90,7 @@
   LS3A6KPeiUARTDebugLib|LoongsonOverclockPkg/Library/LS3A6KPeiUARTDebugLib/LS3A6KPeiUARTDebugLib.inf
   LS3A6KAsmIOCSRPeiLib|LoongsonOverclockPkg/Library/LS3A6KAsmIOCSRPeiLib/LS3A6KAsmIOCSRPeiLib.inf
   LS3A6KPackageControlLib|LoongsonOverclockPkg/Library/LS3A6KPackageControlLib/LS3A6KPackageControlLib.inf
+  LS3A6KOverclockCommonLib|LoongsonOverclockPkg/Library/LS3A6KOverclockCommonLib/LS3A6KOverclockCommonLib.inf
   !if $(TARGET) == RELEASE
     DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf
   !else
